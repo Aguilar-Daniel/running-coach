@@ -1,4 +1,5 @@
 from flask import jsonify
+from werkzeug.exceptions import HTTPException
 
 
 def register_error_handlers(app):
@@ -16,4 +17,14 @@ def register_error_handlers(app):
 
     @app.errorhandler(500)
     def server_error(err):
+        return jsonify({"error": "internal server error"}), 500
+
+    @app.errorhandler(HTTPException)
+    def handle_http_exception(err):
+        """Catch-all handler for any HTTP error not explicitly handled above."""
+        return jsonify({"error": getattr(err, "description", "error")}), err.code
+
+    @app.errorhandler(Exception)
+    def handle_exception(err):
+        """Fallback handler for uncaught non-HTTP exceptions."""
         return jsonify({"error": "internal server error"}), 500

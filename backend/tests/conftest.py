@@ -15,4 +15,9 @@ def app():
 
 @pytest.fixture
 def client(app):
+    # Add a test route that only accepts GET for testing HTTP method errors
+    @app.route("/api/v1/test-get-only", methods=["GET"])
+    def test_get_only():
+        return {"message": "OK"}, 200
+
     return app.test_client()
