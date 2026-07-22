@@ -2,7 +2,7 @@ from flask import Flask
 from app.config import CONFIG_MAP
 from app.extensions import db, migrate, jwt, bcrypt
 from app.errors import register_error_handlers
-
+from app import models
 
 def create_app(config_name="development"):
     app = Flask(__name__)
