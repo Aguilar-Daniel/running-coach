@@ -2,7 +2,7 @@ from flask import Flask
 from app.config import CONFIG_MAP
 from app.extensions import db, migrate, jwt, bcrypt
 from app.errors import register_error_handlers
-from app import models
+
 
 def create_app(config_name="development"):
     app = Flask(__name__)
@@ -12,6 +12,9 @@ def create_app(config_name="development"):
     migrate.init_app(app, db)
     jwt.init_app(app)
     bcrypt.init_app(app)
+    from app import auth_callbacks
+    from app.routes.auth import auth_bp
+    app.register_blueprint(auth_bp)
 
     register_error_handlers(app)
 
