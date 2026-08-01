@@ -32,3 +32,18 @@ def test_login_rejects_wrong_password(client, register_user):
     register_user()
     response = client.post('/api/v1/auth/login', json={'email': 'runner@example.com', 'password': 'wrongPassword'})
     assert response.status_code == 401
+
+def test_me_requires_authentication(client):
+    response = client.get('/api/v1/auth/me')
+    assert response.status_code == 401
+
+def test_me_returns_current_user(auth_client):
+    response = auth_client.get('/api/v1/auth/me')
+    assert response.status_code == 200
+    assert response.json['email'] == 'runner@example.com'
+
+def test_logout_clears_session(auth_client):
+    logout = auth_client.post('/api/v1/auth/logout')
+    assert logout.status_code == 200
+    get_me = auth_client.get('/api/v1/auth/me')
+    assert get_me.status_code == 401

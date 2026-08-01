@@ -1,9 +1,10 @@
 from flask import Blueprint, request, jsonify, make_response
-from flask_jwt_extended import create_access_token, set_access_cookies
+from flask_jwt_extended import create_access_token, set_access_cookies, jwt_required, unset_jwt_cookies
 from app.extensions import db, bcrypt
 from app.models.user import User
 from app.models.profile import Profile
 from app.schemas.auth import RegisterSchema, LoginSchema
+from app.utils import get_current_user
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/api/v1/auth")
 
@@ -43,5 +44,19 @@ def login():
 
     response = make_response(jsonify({'id': user.id, 'email': user.email}), 200)
     set_access_cookies(response, jwt_token)
+
+    return response
+
+@auth_bp.get('/me')
+@jwt_required()
+def me():
+    user = get_current_user()
+    return jsonify({'id': user.id, 'email': user.email}) #No need for code 200 since its the default code returned
+
+@auth_bp.post('/logout')
+# no jwt_required since expired cookies would never reach this point otherwise
+def logout():
+    response = make_response(jsonify({'message': 'logging out'}))
+    unset_jwt_cookies(response)
 
     return response
