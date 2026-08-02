@@ -15,7 +15,8 @@ def create_app(config_name="development"):
     from app import auth_callbacks
     from app.routes.auth import auth_bp
     app.register_blueprint(auth_bp)
-
+    from app.routes.profile import profile_bp
+    app.register_blueprint(profile_bp)
     register_error_handlers(app)
 
     return app
