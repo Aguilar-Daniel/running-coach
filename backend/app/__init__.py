@@ -5,7 +5,7 @@ from app.errors import register_error_handlers
 
 
 def create_app(config_name="development"):
-    app = Flask(__name__)
+    app = Flask(__name__, static_url_path='')
     app.config.from_object(CONFIG_MAP[config_name])
 
     db.init_app(app)
