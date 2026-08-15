@@ -21,7 +21,17 @@ async function apiRequest(method, path, body) {
    const data = await response.json();
 
    if (!response.ok) {
-      const message = data.error || JSON.stringify(data.errors) || 'request failed';
+      let message;
+
+      if (typeof data.error === "string" ) {
+         message = data.error;
+      }
+      else if (typeof data.error === "object") {
+         message = JSON.stringify(data.error) || 'request failed';
+      }
+      else {
+         message = JSON.stringify(data.errors) || 'request failed';
+      }
       throw new Error(message);
    }
 
@@ -30,7 +40,7 @@ async function apiRequest(method, path, body) {
 
 async function requireAuth() {
    try {
-   await apiRequest("GET", "/auth/me");
+      await apiRequest("GET", "/auth/me");
    } catch (err) {
       window.location.href = "/login.html";
    }
