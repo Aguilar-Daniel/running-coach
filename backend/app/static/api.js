@@ -27,7 +27,7 @@ async function apiRequest(method, path, body) {
          message = data.error;
       }
       else if (typeof data.error === "object") {
-         message = JSON.stringify(data.error) || 'request failed';
+         message = JSON.stringify(data.error);
       }
       else {
          message = JSON.stringify(data.errors) || 'request failed';
