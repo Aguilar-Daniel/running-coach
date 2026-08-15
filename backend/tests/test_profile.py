@@ -17,3 +17,11 @@ def test_updates_profile_fields(auth_client):
 def test_catches_fake_fields(auth_client):
     response = auth_client.patch('/api/v1/profile/', json={'name': 'New Name', 'not_a_real_field': 'x'})
     assert response.status_code == 400
+
+def test_updates_profile_with_null_optional_fields(auth_client):
+    response = auth_client.patch('/api/v1/profile/', json={
+        'date_of_birth': None,
+        'sex': None,
+        'experience_level': None,
+    })    
+    assert response.status_code == 200
