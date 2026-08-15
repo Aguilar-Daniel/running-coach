@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Profile</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
+</head>
+
+<body>
+    <main class="container">
+        <h1>Profile</h1>
+        <form id="profile-form">
+            <label>Name
+                <input type="text" name="name" />
+            </label>
+
+            <label>Date of Birth
+                <input type="date" name="date_of_birth" />
+            </label>
+
+            <label>Sex
+                <select name="sex">
+                    <option value="">-- unset --</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select>
+            </label>
+
+            <label>Experience Level
+                <select name="experience_level">
+                    <option value="">-- unset --</option>
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                </select>
+            </label>
+
+            <label>Unit Preference
+                <select name="unit_preference">
+                    <option value="imperial">Imperial</option>
+                    <option value="metric">Metric</option>
+                </select>
+            </label>
+
+            <button type="submit">Save</button>
+        </form>
+        <p id="error-message" hidden></p>
+    </main>
+    <script src="api.js"></script>
+    <script>
+        requireAuth();
+
+        const form = document.getElementById("profile-form");
+
+        async function loadProfile() {
+            try {
+                const profile = await apiRequest("GET", "/profile");
+                form.name.value = profile.name || "";
+                form.date_of_birth.value = profile.date_of_birth || "";
+                form.sex.value = profile.sex || "";
+                form.experience_level.value = profile.experience_level || "";
+                form.unit_preference.value = profile.unit_preference || "imperial";
+            } catch (err) {
+                showError(err);
+            }
+        }
+
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const formData = new FormData(form);
+            const body = {
+                name: formData.get("name"),
+                date_of_birth: formData.get("date_of_birth") || null,
+                sex: formData.get("sex") || null,
+                experience_level: formData.get("experience_level") || null,
+                unit_preference: formData.get("unit_preference"),
+            };
+            try {
+                await apiRequest("PATCH", "/profile", body);
+                const el = document.getElementById("error-message");
+                el.style.color = "green";
+                el.textContent = "Saved.";
+                el.hidden = false;
+            } catch (err) {
+                showError(err);
+            }
+        });
+        loadProfile();
+    </script>
+</body>
+
+</html>
