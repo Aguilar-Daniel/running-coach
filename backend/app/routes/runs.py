@@ -6,6 +6,7 @@ from app.models import Run
 from app.schemas.run import RunCreateSchema, RunUpdateSchema
 from app.utils import get_current_user
 from app.services.pace import calculate_pace_seconds_per_km 
+from app.services.ownership import get_owned_run_or_404
 runs_bp = Blueprint('runs', __name__, url_prefix='/api/v1/runs')
 
 def serialize_run(run):
@@ -43,3 +44,17 @@ def create_run():
 
     return jsonify(serialize_run(new_run)), 201
 
+
+@runs_bp.get('')
+@jwt_required()
+def get_all_runs():
+    current_user = get_current_user()
+    user_runs = [serialize_run(run) for run in current_user.runs]
+    response = {'runs': user_runs}
+    return jsonify(response), 200
+
+@runs_bp.get('/<int:run_id>')
+@jwt_required()
+def get_run_with_id(run_id):
+    current_user = get_current_user()
+    return jsonify(serialize_run(get_owned_run_or_404(run_id,current_user.id))), 200
