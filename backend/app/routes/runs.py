@@ -58,3 +58,28 @@ def get_all_runs():
 def get_run_with_id(run_id):
     current_user = get_current_user()
     return jsonify(serialize_run(get_owned_run_or_404(run_id,current_user.id))), 200
+
+@runs_bp.patch('/<int:run_id>')
+@jwt_required()
+def edit_run(run_id):
+    current_user = get_current_user()
+    patch_request = request.get_json() or {}
+    edited_run = get_owned_run_or_404(run_id, current_user.id)
+    try:
+        patch_request = RunUpdateSchema().load(patch_request) #Gives me organized data (with proper date object instead of string)
+    except ValidationError as e:
+        return jsonify({'error': e.messages}), 400    
+    
+    for key in patch_request:
+        setattr(edited_run, key, patch_request[key])
+    db.session.commit()
+    return jsonify(serialize_run(edited_run)), 200    
+
+@runs_bp.delete('/<int:run_id>')
+@jwt_required()
+def delete_run(run_id):
+    current_user = get_current_user()
+    run_to_delete = get_owned_run_or_404(run_id, current_user.id)
+    db.session.delete(run_to_delete)
+    db.session.commit()
+    return '', 204
