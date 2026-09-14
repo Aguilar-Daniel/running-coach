@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>New Run</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+</head>
+
+<body>
+    <main class="container">
+        <h1>New Run</h1>
+        <form id="run_new-form">
+            <label>Distance
+                <input type="number" name="distance_meters" required/>
+            </label>
+
+            <label>Duration (in seconds)
+                <input type="number" name="duration_seconds" required/>
+            </label>
+
+            <label>Perceived effort
+                <select name="perceived_effort">
+                    <option value="">-- unset --</option>
+                    <option value="easy">easy</option>
+                    <option value="moderate">moderate</option>
+                    <option value="hard">hard</option>
+                </select>
+            </label>
+
+            <label>Date
+                <input type="date" name="date" required/>
+            </label>
+
+            <label>Notes
+                <textarea name="notes"></textarea>
+            </label>
+            
+            <button type="submit">Save</button>
+        </form>
+        <p id="error-message" hidden></p>
+    </main>
+    <script src="api.js"></script>
+    <script>
+        requireAuth();
+
+        const form = document.getElementById("run_new-form");
+        
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const formData = new FormData(form);
+            const body = {
+                distance_meters: Number(formData.get("distance_meters")), 
+                duration_seconds: Number(formData.get("duration_seconds")),
+                perceived_effort: formData.get("perceived_effort") || null,
+                date: formData.get("date"),
+                notes: formData.get("notes") || null,
+            };
+            try {
+                await apiRequest("POST", "/runs", body);
+                window.location.href = "/runs.html";
+            } catch (err) {
+                showError(err);
+            }
+        });
+    </script>
+</body>
+</html>
