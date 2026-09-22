@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Runs</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+</head>
+
+<body>
+    <main class="container">
+        <h1>Your Runs</h1>
+            <table id="runs_table">
+                <thead>
+                    <tr><th>Date</th><th>Distance (m)</th><th>Duration (s)</th><th>Pace (s/km)</th><th></th></tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        <p id="error-message" hidden></p>
+        <p><a href="/run_new.html">Log a new run</a></p>
+    </main>
+    <script src="api.js"></script>
+    <script>
+        requireAuth();
+
+        async function loadRuns() {
+            try {
+                const data = await apiRequest('GET', '/runs');
+                const tbody = document.querySelector("#runs_table tbody");
+                tbody.innerHTML = "";
+                for (const run of data.runs) {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `<td>${run.date}</td><td>${run.distance_meters}</td><td>${run.duration_seconds}</td><td>${run.pace_seconds_per_km}</td><td><a href="/run_edit.html?id=${run.id}">Edit</a></td>`;
+                    tbody.appendChild(row)
+                }
+            } catch (err) {
+                showError(err);
+            }
+        }
+        loadRuns();
+    </script>
+</body>
+</html>
