@@ -32,13 +32,23 @@
                 tbody.innerHTML = "";
                 for (const run of data.runs) {
                     const row = document.createElement("tr");
-                    row.innerHTML = `<td>${run.date}</td><td>${run.distance_meters}</td><td>${run.duration_seconds}</td><td>${run.pace_seconds_per_km}</td><td><a href="/run_edit.html?id=${run.id}">Edit</a></td>`;
+                    row.innerHTML = `<td>${run.date}</td><td>${run.distance_meters}</td><td>${run.duration_seconds}</td><td>${run.pace_seconds_per_km}</td><td><a href="/run_edit.html?id=${run.id}">Edit</a></td><td><button class="delete-run" data-run-id="${run.id}">Delete</button></td>`;
                     tbody.appendChild(row)
                 }
             } catch (err) {
                 showError(err);
             }
         }
+        document.querySelector("#runs_table tbody").addEventListener("click", async (event) => {
+        if (!event.target.classList.contains("delete-run")) return;
+        const runId = event.target.dataset.runId;
+        try { // try-catch block
+            await apiRequest("DELETE", `/runs/${runId}`);
+            loadRuns();
+        } catch (err){
+            showError(err);
+        }
+        })
         loadRuns();
     </script>
 </body>

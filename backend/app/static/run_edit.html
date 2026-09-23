@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Edit Run</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+</head>
+
+<body>
+    <main class="container">
+        <h1>Edit Run</h1>
+        <form id="edit_run_form">
+            <label>Distance
+                <input type="number" name="distance_meters" required/>
+            </label>
+
+            <label>Duration (in seconds)
+                <input type="number" name="duration_seconds" required/>
+            </label>
+
+            <label>Perceived effort
+                <select name="perceived_effort">
+                    <option value="">-- unset --</option>
+                    <option value="easy">easy</option>
+                    <option value="moderate">moderate</option>
+                    <option value="hard">hard</option>
+                </select>
+            </label>
+
+            <label>Date
+                <input type="date" name="date" required/>
+            </label>
+
+            <label>Notes
+                <textarea name="notes"></textarea>
+            </label>
+            
+            <button type="submit">Save</button>
+        </form>
+        <p id="error-message" hidden></p>
+        <p><a href="/runs.html">Back</a></p>
+    </main>
+    <script src="api.js"></script>
+    <script>
+        requireAuth();
+        const params = new URLSearchParams(window.location.search);
+        const runId = params.get("id");
+        const form = document.getElementById("edit_run_form");
+        async function loadRun() {
+            try {
+                const data = await apiRequest('GET', `/runs/${runId}`);
+                form.distance_meters.value = data.distance_meters;
+                form.duration_seconds.value =  data.duration_seconds;
+                form.perceived_effort.value = data.perceived_effort || "";
+                form.date.value = data.date;
+                form.notes.value = data.notes || "";
+            } catch (err) {
+                showError(err);
+            }
+        }
+        loadRun();
+
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const formData = new FormData(form);
+            const body = {
+                distance_meters: Number(formData.get("distance_meters")), 
+                duration_seconds: Number(formData.get("duration_seconds")),
+                perceived_effort: formData.get("perceived_effort") || null,
+                date: formData.get("date"),
+                notes: formData.get("notes") || null,
+            };
+            try {
+                await apiRequest("PATCH", `/runs/${runId}`, body);
+                window.location.href = "/runs.html";
+            } catch (err) {
+                showError(err);
+            }
+        })
+    </script>
+</body>
+</html>
