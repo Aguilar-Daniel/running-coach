@@ -18,8 +18,13 @@ async function apiRequest(method, path, body) {
    }
 
    const response = await fetch(`/api/v1${path}`, options); // ` ` used exactly like f strings
-   const data = await response.json();
-
+   let data;
+   if (response.status === 204) {
+      data = undefined;
+   }
+   else {
+      data = await response.json();
+   }   
    if (!response.ok) {
       let message;
 
