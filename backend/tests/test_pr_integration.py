@@ -66,3 +66,25 @@ def test_delete_run_updates_pr(auth_client):
     assert records.status_code == 200
     pr_5k = next(r for r in records.json['records'] if r['distance_category'] == '5k')
     assert pr_5k['duration_seconds'] == 1400 
+
+def test_edit_run_updates_pr(auth_client):
+    slow_run = auth_client.post('/api/v1/runs', json={
+                'distance_meters': 5000,
+                'duration_seconds': 1400,
+                'date': '2026-07-01'
+    })
+    assert slow_run.status_code == 201
+    pr_run = auth_client.post('/api/v1/runs', json={
+                'distance_meters': 5000,
+                'duration_seconds': 1100,
+                'date': '2026-07-01'
+    })    
+    assert pr_run.status_code == 201
+    edit_request = auth_client.patch(f"/api/v1/runs/{pr_run.json['id']}", json= {
+        'duration_seconds': 1600
+    })   
+    assert edit_request.status_code == 200
+    records = auth_client.get('/api/v1/records')
+    assert records.status_code == 200
+    pr_5k = next(r for r in records.json['records'] if r['distance_category'] == '5k')
+    assert pr_5k['duration_seconds'] == 1400

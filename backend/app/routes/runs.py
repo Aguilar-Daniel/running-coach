@@ -7,7 +7,7 @@ from app.schemas.run import RunCreateSchema, RunUpdateSchema
 from app.utils import get_current_user
 from app.services.pace import calculate_pace_seconds_per_km 
 from app.services.ownership import get_owned_run_or_404
-from app.services.pr_matching import match_distance_category
+from app.services.pr_matching import distance_categories,match_distance_category
 from app.services.pr_updates import make_personal_record_for_run, recompute_personal_record
 runs_bp = Blueprint('runs', __name__, url_prefix='/api/v1/runs')
 
@@ -76,6 +76,9 @@ def edit_run(run_id):
     
     for key in patch_request:
         setattr(edited_run, key, patch_request[key])
+    db.session.flush()    
+    for distance in distance_categories:
+        recompute_personal_record(current_user.id, distance)
     db.session.commit()
     return jsonify(serialize_run(edited_run)), 200    
 
