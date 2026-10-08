@@ -7,6 +7,8 @@ from app.schemas.run import RunCreateSchema, RunUpdateSchema
 from app.utils import get_current_user
 from app.services.pace import calculate_pace_seconds_per_km 
 from app.services.ownership import get_owned_run_or_404
+from app.services.pr_matching import match_distance_category
+from app.services.pr_updates import make_personal_record_for_run, recompute_personal_record
 runs_bp = Blueprint('runs', __name__, url_prefix='/api/v1/runs')
 
 def serialize_run(run):
@@ -39,7 +41,9 @@ def create_run():
                 date=run_data['date'],
                 perceived_effort=run_data.get('perceived_effort', None),
                 notes=run_data.get('notes', None))
-    db.session.add(new_run)  
+    db.session.add(new_run) 
+    db.session.flush() # Creates new_run.id w/o commiting
+    make_personal_record_for_run(new_run)
     db.session.commit()
 
     return jsonify(serialize_run(new_run)), 201
@@ -80,6 +84,9 @@ def edit_run(run_id):
 def delete_run(run_id):
     current_user = get_current_user()
     run_to_delete = get_owned_run_or_404(run_id, current_user.id)
+    distance_category = match_distance_category(run_to_delete.distance_meters)
+    if distance_category is not None:
+        recompute_personal_record(current_user.id, distance_category=distance_category, run_to_ignore=run_to_delete)
     db.session.delete(run_to_delete)
     db.session.commit()
     return '', 204
