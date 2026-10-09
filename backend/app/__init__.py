@@ -19,8 +19,10 @@ def create_app(config_name="development"):
     app.register_blueprint(profile_bp)
     from app.routes.runs import runs_bp
     app.register_blueprint(runs_bp)
-    from app.routes.record import records_bp
+    from app.routes.records import records_bp
     app.register_blueprint(records_bp)
+    from app.routes.dashboard import dashboard_bp
+    app.register_blueprint(dashboard_bp)
     register_error_handlers(app)
 
     return app
