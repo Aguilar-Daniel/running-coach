@@ -59,8 +59,10 @@ flask run
 ```
 
 Open <http://127.0.0.1:5000/>. You will be sent to the login page. Register an account to get started.
-<img width="1438" height="774" alt="Register page" src="https://github.com/user-attachments/assets/8283c046-fa56-43de-8d56-14c347729617" />
-<img width="1440" height="781" alt="Login page" src="https://github.com/user-attachments/assets/7dbd16fb-8e42-4295-8c66-512357d96e8f" />
+<img width="1438" height="774" alt="Register page" src="https://github.com/user-attachments/assets/90772331-2177-4c2d-8d6e-7fdf5cd4e493" />
+
+<img width="1440" height="781" alt="Login page" src="https://github.com/user-attachments/assets/bedb1e55-9a9e-479e-b521-3d29b2863baf" />
+
 
 
 ### Configuration
@@ -101,8 +103,13 @@ All endpoints are under `/api/v1`. Everything except register and login requires
 | `DELETE` | `/runs/<id>` | Delete a run |
 | `GET` | `/records` | Your personal records |
 | `GET` | `/dashboard` | Totals, pace by category, and records |
-<img width="1436" height="762" alt="Dashboard" src="https://github.com/user-attachments/assets/89dbc0f8-9b97-4edd-8e8d-1225d17b8b44" />
-<img width="1423" height="773" alt="Profile" src="https://github.com/user-attachments/assets/13336c1e-fb49-439d-bbae-fddf212b9e36" />
+
+<img width="1436" height="762" alt="Dashboard" src="https://github.com/user-attachments/assets/981f84bb-3d67-433e-9c86-2e4e75993995" />
+
+
+<img width="1440" height="779" alt="Profile" src="https://github.com/user-attachments/assets/be7fc0e5-e16f-4b9d-8377-bdb5c5b04a7a" />
+
+
 Example run:
 
 ```json
@@ -116,9 +123,14 @@ Example run:
 ```
 
 `perceived_effort` is optional and must be `easy`, `moderate`, or `hard`.
-<img width="1435" height="765" alt="Runs" src="https://github.com/user-attachments/assets/94babaaf-782d-4a94-bc57-1ac66eb87b84" />
-<img width="1427" height="774" alt="New run" src="https://github.com/user-attachments/assets/457658f7-0dae-4eb4-9331-53df0a4e99df" />
-<img width="1413" height="772" alt="Edit run" src="https://github.com/user-attachments/assets/2608be94-af5c-4134-89e3-c01ed3da9685" />
+
+<img width="1435" height="765" alt="Runs" src="https://github.com/user-attachments/assets/cf69180e-e03b-4c14-833e-40afe06fdc9a" />
+
+<img width="1427" height="774" alt="New run" src="https://github.com/user-attachments/assets/4b96ff1a-f3d4-4ab7-a829-7a39f1e0f881" />
+
+<img width="1413" height="772" alt="Edit run" src="https://github.com/user-attachments/assets/15b9e88f-3918-44de-8d80-39c956c26e4e" />
+
+
 ## Pages
 
 | Page | Purpose |
