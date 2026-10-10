@@ -25,3 +25,13 @@ def test_updates_profile_with_null_optional_fields(auth_client):
         'experience_level': None,
     })    
     assert response.status_code == 200
+
+def test_date_of_birth_returns_unchanged_in_iso_format(auth_client):
+    patch_response = auth_client.patch('/api/v1/profile/', json={
+        'date_of_birth': '1995-06-15'
+    })
+    assert patch_response.status_code == 200
+    assert patch_response.json['date_of_birth'] == '1995-06-15'
+    get_response = auth_client.get('/api/v1/profile/')
+    assert get_response.status_code == 200
+    assert get_response.json['date_of_birth'] == '1995-06-15'

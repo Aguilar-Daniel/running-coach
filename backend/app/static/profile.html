@@ -9,6 +9,13 @@
 
 <body>
     <main class="container">
+        <nav>
+            <ul>
+                <li><a href="/dashboard.html">Dashboard</a></li>
+                <li><a href="/runs.html">Runs</a></li>
+                <li><a href="#" id="logout-link">Logout</a></li>
+            </ul>
+        </nav>
         <h1>Profile</h1>
         <form id="profile-form">
             <label>Name
@@ -50,6 +57,16 @@
     <script src="api.js"></script>
     <script>
         requireAuth();
+        
+        document.getElementById("logout-link").addEventListener("click", async (event) => {
+            event.preventDefault();
+            try {
+                await apiRequest("POST", "/auth/logout");
+                window.location.href = "/login.html";
+            } catch (err) {
+                showError(err);
+            }
+        });
 
         const form = document.getElementById("profile-form");
 

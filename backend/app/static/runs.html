@@ -9,6 +9,13 @@
 
 <body>
     <main class="container">
+        <nav>
+            <ul>
+                <li><a href="/dashboard.html">Dashboard</a></li>
+                <li><a href="/profile.html">Profile</a></li>
+                <li><a href="#" id="logout-link">Logout</a></li>
+            </ul>
+        </nav>
         <h1>Your Runs</h1>
             <table id="runs_table">
                 <thead>
@@ -24,6 +31,16 @@
     <script src="api.js"></script>
     <script>
         requireAuth();
+
+        document.getElementById("logout-link").addEventListener("click", async (event) => {
+            event.preventDefault();
+            try {
+                await apiRequest("POST", "/auth/logout");
+                window.location.href = "/login.html";
+            } catch (err) {
+                showError(err);
+            }
+        });
 
         async function loadRuns() {
             try {
