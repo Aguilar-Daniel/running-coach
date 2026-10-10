@@ -3,7 +3,6 @@ from app.config import CONFIG_MAP
 from app.extensions import db, migrate, jwt, bcrypt
 from app.errors import register_error_handlers
 
-
 def create_app(config_name="development"):
     app = Flask(__name__, static_url_path='')
     app.config.from_object(CONFIG_MAP[config_name])
@@ -24,5 +23,7 @@ def create_app(config_name="development"):
     from app.routes.dashboard import dashboard_bp
     app.register_blueprint(dashboard_bp)
     register_error_handlers(app)
-
+    @app.route('/')
+    def home():
+        return app.send_static_file('index.html')
     return app
